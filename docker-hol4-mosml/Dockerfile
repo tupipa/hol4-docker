@@ -36,7 +36,7 @@ RUN cd /root/ \
 
 # build source code
 RUN cd /root/HOL \
-    && mosml < tools/smart-configure.sml \
-    && ./bin/build
+    && mosml < tools/smart-configure.sml
+RUN cd /root/HOL && ./bin/build
 
 
