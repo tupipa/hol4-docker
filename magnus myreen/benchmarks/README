@@ -1,0 +1,89 @@
+
+ABOUT
+
+  This folder contains supporting material (the benchmarks) for a
+  paper "Decompilation into Logic --- Improved" submitted to
+  FMCAD'12. For the most recent information see
+
+    http://www.cl.cam.ac.uk/~mom22/decompilation/
+
+  Feel free to contact magnus.myreen@cl.cam.ac.uk with any inquiries.
+
+
+BENCHMARKS
+
+  The benchmarksScript.sml file contains the ARM machine code for our
+  benchmarks:
+
+    sum of array 
+      -- a 4-line program which calculates sum of an array of 32-bit
+          words (ignoring index 0, just to make the code neater)
+ 
+    copying garbage collector
+      -- a Cheney collector used in the construction of a verified
+         Lisp implementation (see Myreen's PhD thesis 2009)
+
+    1024-bit multiword addition 
+      -- straight-line code (224 lines long) which calculates the sum
+         of two 1024-bit words
+
+    256-bit Skein hash function
+      -- we decompile the main loop in the hand-optimised (by Hakon
+         Haugdal Hitland) ARM assembly version of the Skein hash
+         function (http://skein-hash.info/)
+
+  The benchmarks are setup in such a way that they first evaluate the
+  model (by calling arm_spec) so that it's cost is separated from the
+  rest of the decompilation. Once the model has been evaluated for
+  each instruction in the given piece of code, we start the two
+  decompilers. The first one to run is the new one called
+  fast_decompile (defined in rel_decompilerLib). We compare its
+  performance against the decompile function defined in the HOL source
+  repository (under HOL/examples/machine-code/decompiler). In the
+  benchmarksScript.sml we bind the old decompiler to the name
+  old_decompile. Performance numbers are printed in terms of time
+  (seconds) and number of primitive higher-order logic inferences
+  steps which is a more reliable measurement (independent of
+  hardware). We also print the reduction in time/number of inferences.
+
+  The version of the new decompiler (fast_decompile) bundled with
+  these benchmarks is optimised for speed as much as possible. This
+  means that it is customised to avoid any --- strictly speaking ---
+  unnecessary steps, e.g. fast_decompile does not attempt to minimise
+  the set of variables used nor does it spend time "making the output
+  pretty". fast_decompile is a straight-forward for-performance
+  implementation of the algorithm described in the FMCAD'12
+  submission.
+
+  Other version of the new decompiler, which include code for "making
+  the output pretty", are available at the URL given above.
+
+
+INSTALLATION AND RUNNING THE BENCHMARKS
+
+  1. download and install PolyML 5.4 (http://www.polyml.org/)
+
+  2. download the development version of HOL4 by typing:
+
+      git clone git://github.com/mn200/HOL.git
+
+  3. build HOL with the experimental kernel as follows:
+
+       cd HOL
+       poly < tools/smart-configure.sml
+       bin/build -expk
+
+  4. To run the benchmarks, simple type
+
+       cd <to directory of FMCAD'12 supporting material>
+       Holmake
+
+     Note that this call to Holmake will build the necessary library
+     theories recursively and then build an image of HOL4 with the
+     relevant libraries preloaded. This build process can take a few
+     hours to complete.
+
+
+COPYRIGHT
+
+  Magnus Myreen 2012
